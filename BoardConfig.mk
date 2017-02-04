@@ -98,6 +98,7 @@ BOARD_RECOVERY_SWIPE := true
 BOARD_USE_CUSTOM_RECOVERY_FONT := \"roboto_23x41.h\"
 BOARD_USES_MMCUTILS := true
 TARGET_RECOVERY_FSTAB := device/samsung/mondrianwifi/rootdir/etc/fstab.qcom
+TARGET_RECOVERY_DENSITY := hdpi
 
 # SDClang
 TARGET_USE_SDCLANG := true
