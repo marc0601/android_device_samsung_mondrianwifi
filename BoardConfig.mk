@@ -23,7 +23,8 @@ TARGET_OTA_ASSERT_DEVICE := mondrianwifi,mondrianwifiue,mondrianwifixx
 TARGET_BOOTLOADER_BOARD_NAME := MSM8974
 
 # Kernel
-BOARD_CUSTOM_BOOTIMG_MK := device/samsung/mondrianwifi/mkbootimg.mk
+BOARD_CUSTOM_BOOTIMG := true
+BOARD_CUSTOM_BOOTIMG_MK := hardware/samsung/mkbootimg.mk
 BOARD_KERNEL_BASE := 0x00000000
 BOARD_KERNEL_CMDLINE := console=null androidboot.hardware=qcom user_debug=31 msm_rtb.filter=0x37 ehci-hcd.park=3 androidboot.selinux=permissive
 BOARD_KERNEL_PAGESIZE := 2048
