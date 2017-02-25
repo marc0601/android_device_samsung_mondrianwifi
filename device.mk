@@ -26,8 +26,8 @@ PRODUCT_CHARACTERISTICS := tablet
 DEVICE_PACKAGE_OVERLAYS += $(LOCAL_PATH)/overlay
 
 # Device uses high-density artwork where available
-PRODUCT_AAPT_CONFIG := xlarge
-PRODUCT_AAPT_PREF_CONFIG := xhdpi
+PRODUCT_AAPT_CONFIG := normal
+PRODUCT_AAPT_PREF_CONFIG := xxhdpi
 
 # Boot animation
 TARGET_BOOTANIMATION_HALF_RES := true
@@ -48,7 +48,6 @@ PRODUCT_COPY_FILES += \
 # Camera
 PRODUCT_PACKAGES += \
     camera.msm8974 \
-    libshim_qcopt \
     libxml2
 
 # DRM
@@ -127,10 +126,6 @@ PRODUCT_PACKAGES += \
 # Stlport
 PRODUCT_PACKAGES += \
     libstlport
-
-# rmt_storage
-PRODUCT_PACKAGES += \
-    libshim_rmt_storage
 
 # Thermal
 PRODUCT_COPY_FILES += \
