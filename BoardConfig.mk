@@ -115,3 +115,8 @@ TARGET_USES_WCNSS_CTRL := true
 WPA_SUPPLICANT_VERSION := VER_0_8_X
 WIFI_DRIVER_FW_PATH_STA   := "sta"
 WIFI_DRIVER_FW_PATH_AP    := "ap"
+
+# TWRP Support - Optional
+ifeq ($(WITH_TWRP),true)
+-include device/samsung/mondrianwifi/twrp.mk
+endif
