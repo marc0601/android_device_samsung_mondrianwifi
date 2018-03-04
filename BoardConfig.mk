@@ -1,4 +1,5 @@
-# Copyright (C) 2014 The CyanogenMod Project
+# Copyright (C) 2014-2016 The CyanogenMod Project
+# Copyright (C) 2017-2018 The LineageOS Project
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,29 +20,17 @@ TARGET_SPECIFIC_HEADER_PATH := device/samsung/mondrianwifi/include
 
 TARGET_OTA_ASSERT_DEVICE := mondrianwifi,mondrianwifiue,mondrianwifixx
 
-# Bootloader
-TARGET_BOOTLOADER_BOARD_NAME := MSM8974
+# Init
+TARGET_INIT_VENDOR_LIB := libinit_msm8974
+TARGET_LIBINIT_MSM8974_DEFINES_FILE := device/samsung/mondrianwifi/init/init_mondrianwifi.cpp
 
-# Kernel
-BOARD_CUSTOM_BOOTIMG := true
-BOARD_CUSTOM_BOOTIMG_MK := hardware/samsung/mkbootimg.mk
-BOARD_KERNEL_BASE := 0x00000000
-BOARD_KERNEL_CMDLINE := console=null androidboot.hardware=qcom user_debug=31 msm_rtb.filter=0x37 ehci-hcd.park=3 androidboot.selinux=permissive
-BOARD_KERNEL_PAGESIZE := 2048
-BOARD_KERNEL_SEPARATED_DT := true
-BOARD_MKBOOTIMG_ARGS := --ramdisk_offset 0x02900000 --tags_offset 0x02700000
-TARGET_KERNEL_CONFIG := mondrian_defconfig
-TARGET_KERNEL_SOURCE := kernel/samsung/mondrianwifi
+# ADB Legacy Interface
+TARGET_USES_LEGACY_ADB_INTERFACE := true
 
 # Audio
-BOARD_HAVE_NEW_QCOM_CSDCLIENT := true
-BOARD_HAVE_SAMSUNG_AUDIO := true
-BOARD_USES_FLUENCE_INCALL := true
-BOARD_USES_FLUENCE_FOR_VOIP := true
-BOARD_USES_SEPERATED_AUDIO_INPUT := true
-AUDIO_FEATURE_DISABLED_MULTI_VOICE_SESSIONS := true
-AUDIO_FEATURE_DISABLED_FM := true
-AUDIO_FEATURE_DISABLED_ANC_HEADSET := true
+AUDIO_FEATURE_LOW_LATENCY_PRIMARY := true
+AUDIO_FEATURE_ENABLED_HWDEP_CAL := true
+AUDIO_FEATURE_ENABLED_LOW_LATENCY_CAPTURE := true
 USE_CUSTOM_AUDIO_POLICY := 1
 
 # Bluetooth
@@ -50,59 +39,72 @@ BOARD_BLUETOOTH_BDROID_BUILDCFG_INCLUDE_DIR := device/samsung/mondrianwifi/bluet
 BOARD_HAVE_BLUETOOTH_QCOM := true
 QCOM_BT_USE_SMD_TTY := true
 
+# Bootloader
+TARGET_BOOTLOADER_BOARD_NAME := MSM8974
+
 # Camera
-TARGET_PROVIDES_CAMERA_HAL := true
 USE_DEVICE_SPECIFIC_CAMERA := true
-TARGET_HAS_LEGACY_CAMERA_HAL1 := true
+
+# CMHW
+BOARD_HARDWARE_CLASS += device/samsung/mondrianwifi/lineagehw
+
+# Extended Filesystem Support
+TARGET_EXFAT_DRIVER := exfat
+
+# HIDL
+DEVICE_MANIFEST_FILE += device/samsung/mondrianwifi/manifest.xml
+
+# Kernel
+BOARD_KERNEL_BASE := 0x00000000
+BOARD_KERNEL_CMDLINE := console=null androidboot.hardware=qcom user_debug=31 msm_rtb.filter=0x3F androidboot.bootdevice=msm_sdcc.1
+BOARD_KERNEL_IMAGE_NAME := zImage
+BOARD_KERNEL_PAGESIZE := 2048
+BOARD_KERNEL_SEPARATED_DT := true
+BOARD_MKBOOTIMG_ARGS := --ramdisk_offset 0x02900000 --tags_offset 0x02700000
+LZMA_RAMDISK_TARGETS := recovery
+BOARD_CUSTOM_BOOTIMG_MK := hardware/samsung/mkbootimg.mk
+TARGET_KERNEL_CONFIG := lineage_mondrian_defconfig
+TARGET_KERNEL_SOURCE := kernel/samsung/mondrianwifi
+
+# Legacy BLOB Support
 TARGET_NEEDS_PLATFORM_TEXT_RELOCATIONS := true
-
-# Charger
-BOARD_CHARGER_SHOW_PERCENTAGE := true
-
-# GPS
-TARGET_NO_RPC := true
-TARGET_GPS_HAL_PATH := device/samsung/mondrianwifi/gps
-
-# Hardware
-BOARD_HARDWARE_CLASS += device/samsung/mondrianwifi/cmhw
-
-
-# Lights
-TARGET_PROVIDES_LIBLIGHT := true
+TARGET_HAS_LEGACY_CAMERA_HAL1 := true
+TARGET_LD_SHIM_LIBS := /system/vendor/lib/hw/camera.vendor.msm8974.so|libshim_camera.so:/system/lib/libcutils.so|libshim_cutils_atomic.so
 
 # Partitions
 BOARD_BOOTIMAGE_PARTITION_SIZE := 10485760
 BOARD_RECOVERYIMAGE_PARTITION_SIZE := 13631488
-# Use a conservative size to make sure don't run out of space
-# US variant is: 2569011200
-# EU variant is: 2411724800
-BOARD_SYSTEMIMAGE_PARTITION_SIZE := 2400000000
+BOARD_SYSTEMIMAGE_PARTITION_SIZE := 2411724800
 BOARD_USERDATAIMAGE_PARTITION_SIZE := 12661537792
+BOARD_CACHEIMAGE_FILE_SYSTEM_TYPE := ext4
 BOARD_FLASH_BLOCK_SIZE := 131072
 TARGET_USERIMAGES_USE_EXT4 := true
 TARGET_USERIMAGES_USE_F2FS := true
 
-# PowerHAL
+# Power HAL
 TARGET_POWERHAL_VARIANT := qcom
 TARGET_POWERHAL_SET_INTERACTIVE_EXT := device/samsung/mondrianwifi/power/power_ext.c
 
-# Recovery
-BOARD_HAS_LARGE_FILESYSTEM := true
-BOARD_HAS_NO_MISC_PARTITION := true
-BOARD_HAS_NO_SELECT_BUTTON := true
-BOARD_NO_SECURE_DISCARD := true
-BOARD_RECOVERY_SWIPE := true
-BOARD_USE_CUSTOM_RECOVERY_FONT := \"roboto_23x41.h\"
-BOARD_USES_MMCUTILS := true
-TARGET_RECOVERY_FSTAB := device/samsung/mondrianwifi/rootdir/etc/fstab.qcom
-TARGET_RECOVERY_DENSITY := hdpi
+# Properties
+TARGET_SYSTEM_PROP += device/samsung/mondrianwifi/system.prop
 
-# SDClang
-TARGET_USE_SDCLANG := true
+# Recovery
+TARGET_RECOVERY_DENSITY := xhdpi
+TARGET_RECOVERY_FSTAB := device/samsung/mondrianwifi/rootdir/etc/fstab.full
 
 # SELinux
-include device/qcom/sepolicy/sepolicy.mk
-BOARD_SEPOLICY_DIRS += device/samsung/mondrianwifi/sepolicy
+include device/samsung/mondrianwifi/sepolicy/sepolicy.mk
+
+# Sensors
+TARGET_NO_SENSOR_PERMISSION_CHECK := true
+
+# TWRP Support - Optional
+ifeq ($(WITH_TWRP),true)
+-include device/samsung/mondrianwifi/twrp.mk
+endif
+
+# Use Snapdragon LLVM if available on build server
+TARGET_USE_SDCLANG := true
 
 # Wifi
 BOARD_HAS_QCOM_WLAN := true
@@ -116,7 +118,5 @@ WPA_SUPPLICANT_VERSION := VER_0_8_X
 WIFI_DRIVER_FW_PATH_STA   := "sta"
 WIFI_DRIVER_FW_PATH_AP    := "ap"
 
-# TWRP Support - Optional
-ifeq ($(WITH_TWRP),true)
--include device/samsung/mondrianwifi/twrp.mk
-endif
+# Inherit from the proprietary version
+-include vendor/samsung/mondrian/BoardConfigVendor.mk

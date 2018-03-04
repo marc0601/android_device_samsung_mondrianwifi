@@ -1,5 +1,6 @@
 /*
- * Copyright (C) 2012, The CyanogenMod Project
+ * Copyright (C) 2014-2016, The CyanogenMod Project
+ * Copyright (C) 2017-2018, The LineageOS Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,16 +27,28 @@
 
 #define LOG_TAG "CameraWrapper"
 #include <cutils/log.h>
-
 #include <utils/threads.h>
 #include <utils/String8.h>
 #include <hardware/hardware.h>
 #include <hardware/camera.h>
 #include <camera/Camera.h>
-#include <camera/CameraParameters.h>
+#include <camera/CameraParameters2.h>
+
+static const char DIS_DISABLE[] = "disable";
+static const char KEY_DIS[] = "dis";
+static const char KEY_SUPPORTED_VIDEO_HIGH_FRAME_RATE_MODES[] = "video-hfr-values";
+static const char KEY_ZSL[] = "zsl";
+static const char ZSL_OFF[] = "off";
+static const char ZSL_ON[] = "on";
 
 static android::Mutex gCameraWrapperLock;
 static camera_module_t *gVendorModule = 0;
+
+static camera_notify_callback gUserNotifyCb = NULL;
+static camera_data_callback gUserDataCb = NULL;
+static camera_data_timestamp_callback gUserDataCbTimestamp = NULL;
+static camera_request_memory gUserGetMemory = NULL;
+static void *gUserCameraDevice = NULL;
 
 static char **fixed_set_params = NULL;
 
@@ -51,14 +64,16 @@ static struct hw_module_methods_t camera_module_methods = {
     .open = camera_device_open
 };
 
+#define KEY_VIDEO_FRAME_FORMAT "video-frame-format"
+
 camera_module_t HAL_MODULE_INFO_SYM = {
     .common = {
-         tag: HARDWARE_MODULE_TAG,
+         .tag = HARDWARE_MODULE_TAG,
          .module_api_version = CAMERA_MODULE_API_VERSION_1_0,
          .hal_api_version = HARDWARE_HAL_API_VERSION,
          .id = CAMERA_HARDWARE_MODULE_ID,
-         .name = "MSM8974 Camera Wrapper",
-         .author = "The CyanogenMod Project",
+         .name = "Camera Wrapper",
+         .author = "The LineageOS Project",
          .methods = &camera_module_methods,
          .dso = NULL, /* remove compilation warnings */
          .reserved = {0}, /* remove compilation warnings */
@@ -102,8 +117,6 @@ static int check_vendor_module()
     return rv;
 }
 
-#define KEY_VIDEO_HFR_VALUES "video-hfr-values"
-
 static char *camera_fixup_getparams(int __attribute__((unused)) id,
     const char *settings)
 {
@@ -115,16 +128,23 @@ static char *camera_fixup_getparams(int __attribute__((unused)) id,
     params.dump();
 #endif
 
+	const char *videoSizesStr = params.get(android::CameraParameters::KEY_SUPPORTED_VIDEO_SIZES);
+	char tmpsz[strlen(videoSizesStr) + 10 + 1];
+	sprintf(tmpsz, "3840x2160,%s", videoSizesStr);
+	params.set(android::CameraParameters::KEY_SUPPORTED_VIDEO_SIZES, tmpsz);
+
     /* If the vendor has HFR values but doesn't also expose that
      * this can be turned off, fixup the params to tell the Camera
      * that it really is okay to turn it off.
      */
+    params.setPreviewFormat("yuv420sp");
+    params.set(KEY_VIDEO_FRAME_FORMAT, "yuv420sp");
 
-    const char* hfrValues = params.get(KEY_VIDEO_HFR_VALUES);
+    const char* hfrValues = params.get(KEY_SUPPORTED_VIDEO_HIGH_FRAME_RATE_MODES);
     if (hfrValues && *hfrValues && ! strstr(hfrValues, "off")) {
         char tmp[strlen(hfrValues) + 4 + 1];
         sprintf(tmp, "%s,off", hfrValues);
-        params.set(KEY_VIDEO_HFR_VALUES, tmp);
+        params.set(KEY_SUPPORTED_VIDEO_HIGH_FRAME_RATE_MODES, tmp);
     }
 
     android::String8 strParams = params.flatten();
@@ -152,10 +172,10 @@ char * camera_fixup_setparams(struct camera_device * device, const char * settin
     bool isVideo = recordingHint && !strcmp(recordingHint, "true");
 
     if (isVideo) {
-        params.set(android::CameraParameters::KEY_DIS, android::CameraParameters::DIS_DISABLE);
-        params.set(android::CameraParameters::KEY_ZSL, android::CameraParameters::ZSL_OFF);
+        params.set(KEY_DIS, DIS_DISABLE);
+        params.set(KEY_ZSL, ZSL_OFF);
     } else {
-        params.set(android::CameraParameters::KEY_ZSL, android::CameraParameters::ZSL_ON);
+        params.set(KEY_ZSL, ZSL_ON);
     }
 
     android::String8 strParams = params.flatten();
@@ -188,9 +208,29 @@ int camera_set_preview_window(struct camera_device * device,
     return VENDOR_CALL(device, set_preview_window, window);
 }
 
+void camera_notify_cb(int32_t msg_type, int32_t ext1, int32_t ext2, void __attribute__((unused)) *user) {
+    gUserNotifyCb(msg_type, ext1, ext2, gUserCameraDevice);
+}
+
+void camera_data_cb(int32_t msg_type, const camera_memory_t *data, unsigned int index,
+        camera_frame_metadata_t *metadata, void __attribute__((unused)) *user) {
+    gUserDataCb(msg_type, data, index, metadata, gUserCameraDevice);
+}
+
+void camera_data_cb_timestamp(nsecs_t timestamp, int32_t msg_type,
+        const camera_memory_t *data, unsigned index, __attribute__((unused)) void *user) {
+    gUserDataCbTimestamp(timestamp, msg_type, data, index, gUserCameraDevice);
+}
+
+camera_memory_t* camera_get_memory(int fd, size_t buf_size,
+        uint_t num_bufs, void __attribute__((unused)) *user) {
+    return gUserGetMemory(fd, buf_size, num_bufs, gUserCameraDevice);
+}
+
+
 void camera_set_callbacks(struct camera_device * device,
         camera_notify_callback notify_cb,
-        camera_data_callback data_cb,
+        camera_data_callback __attribute__((unused)) data_cb,
         camera_data_timestamp_callback data_cb_timestamp,
         camera_request_memory get_memory,
         void *user)
@@ -201,7 +241,14 @@ void camera_set_callbacks(struct camera_device * device,
     if(!device)
         return;
 
-    VENDOR_CALL(device, set_callbacks, notify_cb, data_cb, data_cb_timestamp, get_memory, user);
+    gUserNotifyCb = notify_cb;
+    gUserDataCb = data_cb;
+    gUserDataCbTimestamp = data_cb_timestamp;
+    gUserGetMemory = get_memory;
+    gUserCameraDevice = user;
+
+    VENDOR_CALL(device, set_callbacks, camera_notify_cb, camera_data_cb,
+            camera_data_cb_timestamp, camera_get_memory, user);
 }
 
 void camera_enable_msg_type(struct camera_device * device, int32_t msg_type)
@@ -446,7 +493,7 @@ int camera_dump(struct camera_device * device, int fd)
 
 extern "C" void heaptracker_free_leaked_memory(void);
 
-int camera_device_close(hw_device_t* device)
+static int camera_device_close(hw_device_t* device)
 {
     int ret = 0;
     wrapper_camera_device_t *wrapper_dev = NULL;
@@ -488,7 +535,7 @@ done:
  * so this function will always only be called once per camera instance
  */
 
-int camera_device_open(const hw_module_t* module, const char* name,
+static int camera_device_open(const hw_module_t* module, const char* name,
                 hw_device_t** device)
 {
     int rv = 0;

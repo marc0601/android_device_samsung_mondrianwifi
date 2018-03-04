@@ -1,6 +1,5 @@
 /*
- * Copyright (C) 2012 The Android Open Source Project
- * Copyright (C) 2012 The CyanogenMod Project <http://www.cyanogenmod.org>
+ * Copyright (C) 2014 The CyanogenMod Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +19,9 @@
 
 #define BTM_DEF_LOCAL_NAME   "Samsung Galaxy Tab Pro 8.4"
 
-/* Defined if the kernel does not have support for CLOCK_BOOTTIME_ALARM */
-#define KERNEL_MISSING_CLOCK_BOOTTIME_ALARM TRUE
+#define BTA_DISABLE_DELAY 100 /* in milliseconds */
+#define BTM_WBS_INCLUDED TRUE
+#define BTIF_HF_WBS_PREFERRED TRUE
+#define BLE_VND_INCLUDED TRUE
 
 #endif

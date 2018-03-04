@@ -35,8 +35,8 @@ key 518    6
 key 519    7
 key 520    8
 key 521    9
-key 213   AVR_INPUT
-key 375   WINDOW
+key 213   AVR_INPUT         	#Sound
+key 375   WINDOW            	#Picture
 key 115   VOLUME_UP
 key 114   VOLUME_DOWN
 key 113   VOLUME_MUTE
@@ -44,20 +44,20 @@ key 402   CHANNEL_UP
 key 403   CHANNEL_DOWN
 key 158   BACK
 key 358   INFO
-key 352   ENTER
+key 352   ENTER             	#OK
 key 103   DPAD_UP
 key 108   DPAD_DOWN
 key 105   DPAD_LEFT
 key 106   DPAD_RIGHT
 key 119   MEDIA_PAUSE
-key 366   DVR
-key 174   BREAK
+key 366   DVR               	#Demo
+key 174   BREAK             	#Exit
 key 148   PROG_RED
 key 373   PROG_GREEN
 key 142   PROG_YELLOW
 key 386   PROG_BLUE
 key 377   TV
-key 181   TV_INPUT
-key 127   FUNCTION
+key 181   TV_INPUT          	#USB
+key 127   FUNCTION          	#Source
 key 139   MENU
 key 116   POWER

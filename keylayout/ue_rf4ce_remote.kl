@@ -35,8 +35,8 @@ key 518    6
 key 519    7
 key 520    8
 key 521    9
-key 141   SETTINGS
-key 116   POWER
+key 141   SETTINGS          	#Sound
+key 116   POWER             	#Picture
 key 352   EQUALS
 key 105   DPAD_LEFT
 key 106   DPAD_RIGHT
@@ -64,5 +64,5 @@ key 113   VOLUME_MUTE
 key 402   CHANNEL_UP
 key 403   CHANNEL_DOWN
 key 110   STB_INPUT
-key 28   ENTER
+key 28   ENTER              	#OK
 key 139   MENU
