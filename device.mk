@@ -50,6 +50,10 @@ PRODUCT_COPY_FILES += \
      $(LOCAL_PATH)/configs/94kernel:system/etc/init.d/94kernel \
      $(LOCAL_PATH)/configs/94-kernel.sh:system/addon.d/94-kernel.sh
 
+# MTP
+PRODUCT_DEFAULT_PROPERTY_OVERRIDES += \
+    persist.sys.usb.config=mtp
+
 # Camera
 PRODUCT_PACKAGES += \
     camera.msm8974 \
