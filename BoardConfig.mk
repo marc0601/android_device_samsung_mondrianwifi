@@ -100,6 +100,9 @@ TARGET_RECOVERY_DENSITY := hdpi
 # SDClang
 TARGET_USE_SDCLANG := true
 
+# Bootanimation
+TARGET_BOOTANIMATION_HALF_RES := true
+
 # SELinux
 include device/qcom/sepolicy/sepolicy.mk
 BOARD_SEPOLICY_DIRS += device/samsung/mondrianwifi/sepolicy
