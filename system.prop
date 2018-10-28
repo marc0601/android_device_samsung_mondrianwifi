@@ -26,6 +26,12 @@ ro.radio.noril=yes
 ro.cwm.forbid_format=/boot,/firmware,/firmware-modem
 ro.cwm.forbid_mount=/boot
 
+# System
+persist.adb.notify=0 
+persist.service.adb.enable=0
+persist.service.debuggable=0
+persist.sys.usb.config=mtp,adb
+
 # Video
 ro.media.enc.hprof.vid.fps=65
 persist.sys.NV_FPSLIMIT=60
