@@ -100,18 +100,9 @@ TARGET_RECOVERY_DENSITY := hdpi
 # SDClang
 TARGET_USE_SDCLANG := true
 
-# Bootanimation
-TARGET_BOOTANIMATION_HALF_RES := true
-
 # SELinux
 include device/qcom/sepolicy/sepolicy.mk
 BOARD_SEPOLICY_DIRS += device/samsung/mondrianwifi/sepolicy
-
-# Binder API version
-TARGET_USES_64_BIT_BINDER := true
-
-# Build
-HWUI_COMPILE_FOR_PERF := true
 
 # Wifi
 BOARD_HAS_QCOM_WLAN := true
