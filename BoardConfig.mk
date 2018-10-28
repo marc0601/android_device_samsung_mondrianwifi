@@ -110,6 +110,9 @@ BOARD_SEPOLICY_DIRS += device/samsung/mondrianwifi/sepolicy
 # Binder API version
 TARGET_USES_64_BIT_BINDER := true
 
+# Build
+HWUI_COMPILE_FOR_PERF := true
+
 # Wifi
 BOARD_HAS_QCOM_WLAN := true
 BOARD_WLAN_DEVICE := qcwcn
