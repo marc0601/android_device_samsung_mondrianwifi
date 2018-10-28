@@ -1,0 +1,11 @@
+#!/system/bin/sh
+# This is an init.d script to control some aspects of the kernel
+# Please make sure that you know what you are doing!
+# Uncomment all parts of the script you want to use by deleting the beginning "#" in the code-line.
+# "echo 1" means enabled, "echo 0" means disabled, "echo xx" means that you have to replace the "xx" with a value of your choice.
+# If something goes wrong, delete this file and reboot. It can also be deleted from TWRP file manager.
+# Script written by darkened_sky
+
+#disable "lmk_fast_run at boot" 
+echo 0 > /sys/module/lowmemorykiller/parameters/lmk_fast_run
+chmod 644 /sys/module/lowmemorykiller/parameters/lmk_fast_run

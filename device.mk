@@ -45,6 +45,11 @@ PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/audio/audio_policy.conf:system/etc/audio_policy.conf \
     $(LOCAL_PATH)/audio/mixer_paths.xml:system/etc/mixer_paths.xml
 
+# Kernel control script
+ PRODUCT_COPY_FILES += \
+     $(LOCAL_PATH)/configs/94kernel:system/etc/init.d/94kernel \
+     $(LOCAL_PATH)/configs/94-kernel.sh:system/addon.d/94-kernel.sh
+
 # Camera
 PRODUCT_PACKAGES += \
     camera.msm8974 \
