@@ -25,3 +25,7 @@ ro.radio.noril=yes
 # CWMR Options
 ro.cwm.forbid_format=/boot,/firmware,/firmware-modem
 ro.cwm.forbid_mount=/boot
+
+# Video
+ro.media.enc.hprof.vid.fps=65
+persist.sys.NV_FPSLIMIT=60
