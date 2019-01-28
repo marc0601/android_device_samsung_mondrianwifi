@@ -32,6 +32,10 @@ persist.service.adb.enable=0
 persist.service.debuggable=0
 persist.sys.usb.config=mtp,adb
 
-# Video
-ro.media.enc.hprof.vid.fps=65
-persist.sys.NV_FPSLIMIT=60
+# Memory Management
+config.disable_atlas=true
+dalvik.vm.dex2oat-swap=false
+dalvik.vm.dexopt-data-only=1
+dalvik.vm.dex2oat-Xmx=256m
+dalvik.vm.heapminfree=512k
+dalvik.vm.heapsize=256m

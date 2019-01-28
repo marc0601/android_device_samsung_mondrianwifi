@@ -6,6 +6,24 @@
 # If something goes wrong, delete this file and reboot. It can also be deleted from TWRP file manager.
 # Script written by darkened_sky
 
-#disable "lmk_fast_run at boot" 
-echo 0 > /sys/module/lowmemorykiller/parameters/lmk_fast_run
-chmod 644 /sys/module/lowmemorykiller/parameters/lmk_fast_run
+#--------------- Kernel Tweaks ---------------------#
+# Swappiness
+echo 60 > /proc/sys/vm/swappiness
+
+# don't touch lines below
+#-------------------------------------------------------
+# LowMemoryKiller
+ADJ="0,100,200,300,900,906"
+MINFREE="18432,23040,27648,32256,36864,46080"
+LMK_FAST_RUN="0"
+#---------------------------------------------------------
+chmod 0644 /sys/module/lowmemorykiller/parameters/adj
+chmod 0644 /sys/module/lowmemorykiller/parameters/minfree
+chmod 0644 /sys/module/lowmemorykiller/parameters/lmk_fast_run
+echo $ADJ > /sys/module/lowmemorykiller/parameters/adj
+echo $MINFREE > /sys/module/lowmemorykiller/parameters/minfree
+echo $LMK_FAST_RUN > /sys/module/lowmemorykiller/parameters/lmk_fast_run
+chmod 0444 /sys/module/lowmemorykiller/parameters/adj
+chmod 0444 /sys/module/lowmemorykiller/parameters/minfree
+chmod 0444 /sys/module/lowmemorykiller/parameters/lmk_fast_run
+#-----------------------------------------------------------
