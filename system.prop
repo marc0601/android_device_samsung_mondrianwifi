@@ -1,0 +1,41 @@
+# display
+lockscreen.rot_override=true
+ro.hdcp2.rx=tz
+ro.qualcomm.cabl=1
+ro.secwvk=144
+ro.sf.lcd_density=320
+
+# Bluetooth
+qcom.bluetooth.soc=smd
+
+# Camera
+camera2.portability.force_api=1
+media.stagefright.legacyencoder=true
+media.stagefright.less-secure=true
+
+# gps
+persist.gps.qc_nlp_in_use=0
+ro.gps.agps_provider=1
+ro.qc.sdk.izat.premium_enabled=0
+ro.qc.sdk.izat.service_mask=0x0
+
+# radio
+ro.radio.noril=yes
+
+# CWMR Options
+ro.cwm.forbid_format=/boot,/firmware,/firmware-modem
+ro.cwm.forbid_mount=/boot
+
+# System
+persist.adb.notify=0 
+persist.service.adb.enable=0
+persist.service.debuggable=0
+persist.sys.usb.config=mtp,adb
+
+# Memory Management
+config.disable_atlas=true
+dalvik.vm.dex2oat-swap=false
+dalvik.vm.dexopt-data-only=1
+dalvik.vm.dex2oat-Xmx=256m
+dalvik.vm.heapminfree=512k
+dalvik.vm.heapsize=256m
